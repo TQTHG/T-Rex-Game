@@ -73,13 +73,11 @@ cactus = {
     "cactus_speed": 8,
     "cactus_color":red
 }
-
 cactus_rect = (cactus["cactus_x"],
                cactus["cactus_y"],
                cactus["cactus_width"],
                cactus["cactus_height"]
 )
-
 cactus_path = os.path.join(file_path,"assets","icon","cactus.png")
 cactus_icon = pygame.image.load(cactus_path)
 cactus_image = pygame.transform.scale(cactus_icon,(cactus["cactus_width"],cactus["cactus_height"]))
@@ -98,9 +96,6 @@ for i in range(3):
             "img": pygame.transform.scale(cloud_image,(80,40))
     }
     clouds.append(cloud)
-
-
-    
 
 # Sounds
 jump_path = os.path.join(file_path,"assets","sounds","Mario_Jump.mp3")
