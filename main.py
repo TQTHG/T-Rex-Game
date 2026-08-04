@@ -2,7 +2,10 @@ import pygame
 import random
 import os
 
+file_path = os.path.dirname(os.path.abspath(__file__))
+
 pygame.init()
+pygame.mixer.init()
 
 # Screen
 width = 1200
@@ -76,7 +79,7 @@ cactus_rect = (cactus["cactus_x"],
 # Clouds
 clouds = []
 
-for i in range(5):
+for i in range(3):
     cloud = {"cloud_x": width + random.randint(100,500) +- 120,
             "cloud_y": random.randint(0,height // 2),
             "cloud_width": 80,
@@ -85,6 +88,16 @@ for i in range(5):
             "cloud_speed": random.randint(2,3)
     }
     clouds.append(cloud)
+
+# Sounds
+jump_path = os.path.join(file_path,"assets","sounds","Mario_Jump.mp3")
+jump = pygame.mixer.Sound(jump_path)
+
+Bing_path = os.path.join(file_path,"assets","sounds","Bing_HI.mp3")
+Bing = pygame.mixer.Sound(Bing_path)
+
+dead_path = os.path.join(file_path,"assets","sounds","UGH.mp3")
+dead = pygame.mixer.Sound(dead_path)
 
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("T-Rex Game")
@@ -102,6 +115,7 @@ while running:
                     if is_grounded == True:
                         is_grounded = False
                         vy_trex = -20
+                        jump.play()
 
                 elif game_state == "DEAD":
                     screen.fill(black)
@@ -120,6 +134,8 @@ while running:
         frame_count += 1
         if frame_count >= fps // 12:
             score += 1
+            if score % 100 == 0:
+                Bing.play()
             frame_count = 0
 
         if is_grounded == False:
@@ -155,6 +171,7 @@ while running:
         if trex_rect.colliderect(cactus_rect):
             if score > best_score:
                 best_score = score
+            dead.play()
             game_state = "DEAD"
 
         for cloud in clouds:
@@ -188,7 +205,6 @@ while running:
             cactus["cactus_speed"] = 15 # MAX SPEED
 
 
-
         trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
         ground = pygame.draw.rect(screen , white , ground_rect , 5)
@@ -196,8 +212,6 @@ while running:
         trex = pygame.draw.rect(screen , trex_color , trex_rect)
 
         pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect) #CACTUS
-
-
 
         score_text = font.render(f"Score: {score}" , True , white)
         score_rect = score_text.get_rect(midtop = (50 , 0))
