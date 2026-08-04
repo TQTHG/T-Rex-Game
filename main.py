@@ -157,8 +157,6 @@ while running:
                 best_score = score
             game_state = "DEAD"
 
-
-
         for cloud in clouds:
             cloud["cloud_x"] -= cloud["cloud_speed"]
             cloud_rect = pygame.Rect(cloud["cloud_x"],
@@ -173,6 +171,23 @@ while running:
                 cloud["cloud_width"] = random.randint(70,120)
                 cloud["cloud_height"] = random.randint(30,50)
             pygame.draw.ellipse(screen, cloud["cloud_color"],cloud_rect) # CLOUD
+
+        if score >= 400:
+            cactus["cactus_speed"] = 9
+        elif score >= 500:
+            cactus["cactus_speed"] = 10
+        elif score >= 600:
+            cactus["cactus_speed"] = 11
+        elif score >= 700:
+            cactus["cactus_speed"] = 12
+        elif score >= 800:
+            cactus["cactus_speed"] = 13
+        elif score >= 900:
+            cactus["cactus_speed"] = 14
+        elif score >= 1000:
+            cactus["cactus_speed"] = 15 # MAX SPEED
+
+
 
         trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
