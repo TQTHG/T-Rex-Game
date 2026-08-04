@@ -36,16 +36,18 @@ trex_width = 40
 trex_height = 60
 
 trex_x =  int(width * 1/5)
-trex_y =  ground_y - trex_height - 500
+trex_y =  ground_y - trex_height
 
 trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
+
+is_grounded = True
 
 # Physics
 gravity = 1
 vy_trex = 0
 
 screen = pygame.display.set_mode((width,height))
-pygame.display.set_caption("")
+pygame.display.set_caption("T-Rex Game")
 
 running = True
 while running:
@@ -54,6 +56,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE or pygame.KEYUP:
+                if is_grounded == True:
+                    is_grounded = False
+                    vy_trex = -20
+
     screen.fill(black)
 
     frame_count += 1
@@ -61,12 +69,15 @@ while running:
         score += 1
         frame_count = 0
 
-    vy_trex += gravity
-    trex_y += vy_trex
-
-    if trex_y  >= ground_y - trex_height:
+    if is_grounded == False:
+        vy_trex += gravity
+        trex_y += vy_trex
+    elif is_grounded == True:
         vy_trex = 0
         trex_y = ground_y - trex_height
+    if trex_y >= ground_y - trex_height:
+            is_grounded = True
+
 
     trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
