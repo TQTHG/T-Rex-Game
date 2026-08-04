@@ -36,7 +36,7 @@ best_score = 0
 
 # Ground
 ground_y = height - 100
-ground_rect = pygame.Rect(0 , ground_y , width , height)
+ground_rect = pygame.Rect(-10 , ground_y , width + 10 , height)
 
 # Speed
 frame_count = 0
@@ -47,6 +47,10 @@ trex_height = 60
 
 trex_x =  int(width * 1/5)
 trex_y =  ground_y - trex_height
+
+trex_path = os.path.join(file_path,"assets","icon","T_rex.png")
+trex_icon = pygame.image.load(trex_path)
+trex = pygame.transform.scale(trex_icon,(trex_width,trex_height))
 
 trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
@@ -139,7 +143,7 @@ while running:
                     game_state = "PLAY"
 
     if game_state == "PLAY":
-        screen.fill(black)
+        screen.fill(white)
 
         frame_count += 1
         if frame_count >= fps // 12:
@@ -203,20 +207,19 @@ while running:
                 cloud["cloud_height"] = random.randint(30,50)
             pygame.draw.ellipse(screen, cloud["cloud_color"],cloud_rect) # CLOUD
 
-
         trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
-        ground = pygame.draw.rect(screen , white , ground_rect , 5)
+        ground = pygame.draw.rect(screen , black , ground_rect , 5)
 
-        trex = pygame.draw.rect(screen , trex_color , trex_rect)
+        screen.blit(trex,(trex_x,trex_y))
 
         pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect) #CACTUS
 
-        score_text = font.render(f"Score: {score}" , True , white)
+        score_text = font.render(f"Score: {score}" , True , black)
         score_rect = score_text.get_rect(midtop = (50 , 0))
         screen.blit(score_text,score_rect)
 
-        best_text = font.render(f"Best score: {best_score}" , True , white)
+        best_text = font.render(f"Best score: {best_score}" , True , black)
         best_rect = best_text.get_rect(midtop = (200 , 0))
         screen.blit(best_text,best_rect)
 
@@ -226,7 +229,7 @@ while running:
         dead_rect = dead_text.get_rect(center = (width / 2 , height / 2))
         screen.blit(dead_text,dead_rect)
 
-        restart = font.render("Press SPACE to restart" , True , white)
+        restart = font.render("Press SPACE to restart" , True , black)
         restart_rect = restart.get_rect(center = (width / 2 , height / 2 + 50))
         screen.blit(restart,restart_rect)
 
