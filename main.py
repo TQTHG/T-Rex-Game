@@ -80,18 +80,27 @@ cactus_rect = (cactus["cactus_x"],
                cactus["cactus_height"]
 )
 
+cactus_path = os.path.join(file_path,"assets","icon","cactus.png")
+cactus_icon = pygame.image.load(cactus_path)
+cactus_image = pygame.transform.scale(cactus_icon,(cactus["cactus_width"],cactus["cactus_height"]))
+
 # Clouds
 clouds = []
-
+cloud_path = os.path.join(file_path,"assets","icon","black_cloud.png")
+cloud_image = pygame.image.load(cloud_path)
 for i in range(3):
     cloud = {"cloud_x": width + random.randint(100,500) +- 120,
             "cloud_y": random.randint(0,height // 2),
             "cloud_width": 80,
             "cloud_height": 40,
             "cloud_color": white,
-            "cloud_speed": random.randint(2,3)
+            "cloud_speed": random.randint(2,3),
+            "img": pygame.transform.scale(cloud_image,(80,40))
     }
     clouds.append(cloud)
+
+
+    
 
 # Sounds
 jump_path = os.path.join(file_path,"assets","sounds","Mario_Jump.mp3")
@@ -211,9 +220,12 @@ while running:
 
         ground = pygame.draw.rect(screen , black , ground_rect , 5)
 
-        screen.blit(trex,(trex_x,trex_y))
+        screen.blit(trex,(trex_x,trex_y)) # T-REX
 
-        pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect) #CACTUS
+        screen.blit(cactus_image,(cactus["cactus_x"],cactus["cactus_y"])) #CACTUS
+
+        for cloud in clouds:
+            screen.blit(cloud["img"],(cloud["cloud_x"],cloud["cloud_y"]))
 
         score_text = font.render(f"Score: {score}" , True , black)
         score_rect = score_text.get_rect(midtop = (50 , 0))
