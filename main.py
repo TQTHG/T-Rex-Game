@@ -84,10 +84,21 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE or pygame.KEYUP:
-                if is_grounded == True:
-                    is_grounded = False
-                    vy_trex = -20
+            if event.key == pygame.K_SPACE:
+                if game_state == "PLAY":
+                    if is_grounded == True:
+                        is_grounded = False
+                        vy_trex = -20
+
+                elif game_state == "DEAD":
+                    screen.fill(black)
+                    vy_trex = 0
+                    trex_y = ground_y - trex_height
+                    is_grounded = True
+                    cactus["cactus_x"] = width
+                    cactus["speed"] = 8
+                    score = 0
+                    game_state = "PLAY"
 
     if game_state == "PLAY":
         screen.fill(black)
@@ -127,7 +138,10 @@ while running:
         if cactus["cactus_x"] <= 0 - cactus["cactus_width"]:
             cactus["cactus_x"] = width + random.randint(0,200)
             cactus["speed"] = random.randint(8,15)
+            
         if trex_rect.colliderect(cactus_rect):
+            if score > best_score:
+                best_score = score
             game_state = "DEAD"
 
         trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
@@ -147,11 +161,14 @@ while running:
         screen.blit(best_text,best_rect)
 
     elif game_state == "DEAD":
-        screen.fill(black)
 
         dead_text = over_font.render("GAME OVER" , True , red)
         dead_rect = dead_text.get_rect(center = (width / 2 , height / 2))
         screen.blit(dead_text,dead_rect)
+
+        restart = font.render("Press SPACE to restart" , True , white)
+        restart_rect = restart.get_rect(center = (width / 2 , height / 2 + 50))
+        screen.blit(restart,restart_rect)
 
     clock.tick(fps)
     pygame.display.update()
