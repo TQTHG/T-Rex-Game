@@ -16,6 +16,9 @@ blue = (0,0,255)
 green = (0,255,0)
 white = (255,255,255)
 black = (0,0,0)
+trex_color = green
+
+dark_green = (0,180,0)
 
 # Font
 font = pygame.font.SysFont(None,30)
@@ -45,6 +48,10 @@ is_grounded = True
 # Physics
 gravity = 1
 vy_trex = 0
+
+# Animation
+animation_timer = 0
+animation_index = 0
 
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("T-Rex Game")
@@ -78,13 +85,23 @@ while running:
     if trex_y >= ground_y - trex_height:
             is_grounded = True
 
+    if is_grounded == True:
+        animation_timer += 1
+        if animation_timer >= 8:
+            animation_index = (animation_index + 1) % 2
+            animation_timer = 0
+        if animation_index == 0:
+            trex_color = green
+        else:
+            trex_color = blue
+    else:
+        trex_color = red
 
     trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
     ground = pygame.draw.rect(screen , white , ground_rect , 5)
 
-    trex = pygame.draw.rect(screen , green , trex_rect)
-
+    trex = pygame.draw.rect(screen , trex_color , trex_rect)
 
     score_text = font.render(f"Score: {score}" , True , white)
     score_rect = score_text.get_rect(midtop = (50 , 0))
