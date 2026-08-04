@@ -7,6 +7,7 @@ pygame.init()
 # Screen
 width = 1200
 height = 800
+game_state = "PLAY"
 
 # Frame Per Second
 fps = 60
@@ -24,6 +25,7 @@ dark_green = (0,180,0)
 
 # Font
 font = pygame.font.SysFont(None,30)
+over_font = pygame.font.SysFont(None,70)
 
 # Score
 score = 0
@@ -87,59 +89,69 @@ while running:
                     is_grounded = False
                     vy_trex = -20
 
-    screen.fill(black)
+    if game_state == "PLAY":
+        screen.fill(black)
 
-    frame_count += 1
-    if frame_count >= fps // 12:
-        score += 1
-        frame_count = 0
+        frame_count += 1
+        if frame_count >= fps // 12:
+            score += 1
+            frame_count = 0
 
-    if is_grounded == False:
-        vy_trex += gravity
-        trex_y += vy_trex
-    elif is_grounded == True:
-        vy_trex = 0
-        trex_y = ground_y - trex_height
-    if trex_y >= ground_y - trex_height:
-            is_grounded = True
+        if is_grounded == False:
+            vy_trex += gravity
+            trex_y += vy_trex
+        elif is_grounded == True:
+            vy_trex = 0
+            trex_y = ground_y - trex_height
+        if trex_y >= ground_y - trex_height:
+                is_grounded = True
 
-    if is_grounded == True:
-        animation_timer += 1
-        if animation_timer >= 8:
-            animation_index = (animation_index + 1) % 2
-            animation_timer = 0
-        if animation_index == 0:
-            trex_color = green
+        if is_grounded == True:
+            animation_timer += 1
+            if animation_timer >= 8:
+                animation_index = (animation_index + 1) % 2
+                animation_timer = 0
+            if animation_index == 0:
+                trex_color = green
+            else:
+                trex_color = blue
         else:
-            trex_color = blue
-    else:
-        trex_color = red
+            trex_color = red
 
-    cactus["cactus_x"] -= cactus["speed"]
-    cactus_rect = (cactus["cactus_x"],
-               cactus["cactus_y"],
-               cactus["cactus_width"],
-               cactus["cactus_height"]
-    )
-    if cactus["cactus_x"] <= 0 - cactus["cactus_width"]:
-        cactus["cactus_x"] = width + random.randint(0,200)
-        cactus["speed"] = random.randint(8,15)
+        cactus["cactus_x"] -= cactus["speed"]
+        cactus_rect = (cactus["cactus_x"],
+                cactus["cactus_y"],
+                cactus["cactus_width"],
+                cactus["cactus_height"]
+        )
+        if cactus["cactus_x"] <= 0 - cactus["cactus_width"]:
+            cactus["cactus_x"] = width + random.randint(0,200)
+            cactus["speed"] = random.randint(8,15)
+        if trex_rect.colliderect(cactus_rect):
+            game_state = "DEAD"
 
-    trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
+        trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
-    ground = pygame.draw.rect(screen , white , ground_rect , 5)
+        ground = pygame.draw.rect(screen , white , ground_rect , 5)
 
-    trex = pygame.draw.rect(screen , trex_color , trex_rect)
+        trex = pygame.draw.rect(screen , trex_color , trex_rect)
 
-    pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect)
+        pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect)
 
-    score_text = font.render(f"Score: {score}" , True , white)
-    score_rect = score_text.get_rect(midtop = (50 , 0))
-    screen.blit(score_text,score_rect)
+        score_text = font.render(f"Score: {score}" , True , white)
+        score_rect = score_text.get_rect(midtop = (50 , 0))
+        screen.blit(score_text,score_rect)
 
-    best_text = font.render(f"Best score: {best_score}" , True , white)
-    best_rect = best_text.get_rect(midtop = (200 , 0))
-    screen.blit(best_text,best_rect)
+        best_text = font.render(f"Best score: {best_score}" , True , white)
+        best_rect = best_text.get_rect(midtop = (200 , 0))
+        screen.blit(best_text,best_rect)
+
+    elif game_state == "DEAD":
+        screen.fill(black)
+
+        dead_text = over_font.render("GAME OVER" , True , red)
+        dead_rect = dead_text.get_rect(center = (width / 2 , height / 2))
+        screen.blit(dead_text,dead_rect)
 
     clock.tick(fps)
     pygame.display.update()
