@@ -76,19 +76,15 @@ cactus_rect = (cactus["cactus_x"],
 # Clouds
 clouds = []
 
-cloud = {"cloud_x": width,
-         "cloud_y": random.randint(0,height // 2 - 200),
-         "cloud_width": 80,
-         "cloud_height": 40,
-         "cloud_color": white,
-         "cloud_speed": random.randint(1,4)
-}
-
-cloud_rect = pygame.Rect(cloud["cloud_x"],
-                         cloud["cloud_y"],
-                         cloud["cloud_width"],
-                         cloud["cloud_height"]
-)
+for i in range(5):
+    cloud = {"cloud_x": width + random.randint(100,500) +- 120,
+            "cloud_y": random.randint(0,height // 2),
+            "cloud_width": 80,
+            "cloud_height": 40,
+            "cloud_color": white,
+            "cloud_speed": random.randint(2,3)
+    }
+    clouds.append(cloud)
 
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("T-Rex Game")
@@ -161,19 +157,22 @@ while running:
                 best_score = score
             game_state = "DEAD"
 
-        cloud["cloud_x"] -= cloud["cloud_speed"]
-        cloud_rect = pygame.Rect(cloud["cloud_x"],
-                                cloud["cloud_y"],
-                                cloud["cloud_width"],
-                                cloud["cloud_height"]
-        )
-        if cloud["cloud_x"] <= 0 - cloud["cloud_width"]:
-            cloud["cloud_x"] = width + random.randint(0,200)
-            cloud["cloud_y"] = random.randint(0,height // 2 - 200)
-            cloud["cloud_speed"] = random.randint(1,4)
-            cloud["cloud_width"] = random.randint(70,120)
-            cloud["cloud_height"] = random.randint(30,50)
-            
+
+
+        for cloud in clouds:
+            cloud["cloud_x"] -= cloud["cloud_speed"]
+            cloud_rect = pygame.Rect(cloud["cloud_x"],
+                                    cloud["cloud_y"],
+                                    cloud["cloud_width"],
+                                    cloud["cloud_height"]
+            )
+            if cloud["cloud_x"] <= 0 - cloud["cloud_width"]:
+                cloud["cloud_x"] = width + random.randint(0,200)
+                cloud["cloud_y"] = random.randint(0,height // 2)
+                cloud["cloud_speed"] = random.randint(2,3)
+                cloud["cloud_width"] = random.randint(70,120)
+                cloud["cloud_height"] = random.randint(30,50)
+            pygame.draw.ellipse(screen, cloud["cloud_color"],cloud_rect) # CLOUD
 
         trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
@@ -183,7 +182,7 @@ while running:
 
         pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect) #CACTUS
 
-        pygame.draw.ellipse(screen, cloud["cloud_color"],cloud_rect) # CLOUD
+
 
         score_text = font.render(f"Score: {score}" , True , white)
         score_rect = score_text.get_rect(midtop = (50 , 0))
