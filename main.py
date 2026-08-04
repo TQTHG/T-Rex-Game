@@ -1,4 +1,6 @@
 import pygame
+import random
+import os
 
 pygame.init()
 
@@ -53,6 +55,22 @@ vy_trex = 0
 animation_timer = 0
 animation_index = 0
 
+# Cactus
+cactus = {
+    "cactus_x": width,
+    "cactus_y": ground_y - 60,
+    "cactus_width": 30,
+    "cactus_height": 60,
+    "speed": 8,
+    "cactus_color":red
+}
+
+cactus_rect = (cactus["cactus_x"],
+               cactus["cactus_y"],
+               cactus["cactus_width"],
+               cactus["cactus_height"]
+)
+
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("T-Rex Game")
 
@@ -97,11 +115,23 @@ while running:
     else:
         trex_color = red
 
+    cactus["cactus_x"] -= cactus["speed"]
+    cactus_rect = (cactus["cactus_x"],
+               cactus["cactus_y"],
+               cactus["cactus_width"],
+               cactus["cactus_height"]
+    )
+    if cactus["cactus_x"] <= 0 - cactus["cactus_width"]:
+        cactus["cactus_x"] = width + random.randint(0,200)
+        cactus["speed"] = random.randint(8,15)
+
     trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
     ground = pygame.draw.rect(screen , white , ground_rect , 5)
 
     trex = pygame.draw.rect(screen , trex_color , trex_rect)
+
+    pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect)
 
     score_text = font.render(f"Score: {score}" , True , white)
     score_rect = score_text.get_rect(midtop = (50 , 0))
