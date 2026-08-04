@@ -63,7 +63,7 @@ cactus = {
     "cactus_y": ground_y - 60,
     "cactus_width": 30,
     "cactus_height": 60,
-    "speed": 8,
+    "cactus_speed": 8,
     "cactus_color":red
 }
 
@@ -71,6 +71,23 @@ cactus_rect = (cactus["cactus_x"],
                cactus["cactus_y"],
                cactus["cactus_width"],
                cactus["cactus_height"]
+)
+
+# Clouds
+clouds = []
+
+cloud = {"cloud_x": width,
+         "cloud_y": random.randint(0,height // 2 - 200),
+         "cloud_width": 80,
+         "cloud_height": 40,
+         "cloud_color": white,
+         "cloud_speed": random.randint(1,4)
+}
+
+cloud_rect = pygame.Rect(cloud["cloud_x"],
+                         cloud["cloud_y"],
+                         cloud["cloud_width"],
+                         cloud["cloud_height"]
 )
 
 screen = pygame.display.set_mode((width,height))
@@ -96,7 +113,8 @@ while running:
                     trex_y = ground_y - trex_height
                     is_grounded = True
                     cactus["cactus_x"] = width
-                    cactus["speed"] = 8
+                    cactus["cactus_speed"] = 8
+                    cloud["cloud_x"] = width
                     score = 0
                     game_state = "PLAY"
 
@@ -129,7 +147,7 @@ while running:
         else:
             trex_color = red
 
-        cactus["cactus_x"] -= cactus["speed"]
+        cactus["cactus_x"] -= cactus["cactus_speed"]
         cactus_rect = (cactus["cactus_x"],
                 cactus["cactus_y"],
                 cactus["cactus_width"],
@@ -137,12 +155,25 @@ while running:
         )
         if cactus["cactus_x"] <= 0 - cactus["cactus_width"]:
             cactus["cactus_x"] = width + random.randint(0,200)
-            cactus["speed"] = random.randint(8,15)
-            
+
         if trex_rect.colliderect(cactus_rect):
             if score > best_score:
                 best_score = score
             game_state = "DEAD"
+
+        cloud["cloud_x"] -= cloud["cloud_speed"]
+        cloud_rect = pygame.Rect(cloud["cloud_x"],
+                                cloud["cloud_y"],
+                                cloud["cloud_width"],
+                                cloud["cloud_height"]
+        )
+        if cloud["cloud_x"] <= 0 - cloud["cloud_width"]:
+            cloud["cloud_x"] = width + random.randint(0,200)
+            cloud["cloud_y"] = random.randint(0,height // 2 - 200)
+            cloud["cloud_speed"] = random.randint(1,4)
+            cloud["cloud_width"] = random.randint(70,120)
+            cloud["cloud_height"] = random.randint(30,50)
+            
 
         trex_rect = pygame.Rect(trex_x,trex_y,trex_width,trex_height)
 
@@ -150,7 +181,9 @@ while running:
 
         trex = pygame.draw.rect(screen , trex_color , trex_rect)
 
-        pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect)
+        pygame.draw.rect(screen,cactus["cactus_color"], cactus_rect) #CACTUS
+
+        pygame.draw.ellipse(screen, cloud["cloud_color"],cloud_rect) # CLOUD
 
         score_text = font.render(f"Score: {score}" , True , white)
         score_rect = score_text.get_rect(midtop = (50 , 0))
