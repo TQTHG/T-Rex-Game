@@ -102,6 +102,16 @@ dead = pygame.mixer.Sound(dead_path)
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("T-Rex Game")
 
+# Data
+path = os.path.join(file_path,"best_score.txt")
+if os.path.exists(path):
+    with open(path,"r") as file:
+        for data in file:
+            best_score = int(data)
+else:
+    best_score = 0
+    pass
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -171,6 +181,10 @@ while running:
         if trex_rect.colliderect(cactus_rect):
             if score > best_score:
                 best_score = score
+
+            with open(path,"w") as file:
+                file.write(str(best_score))
+
             dead.play()
             game_state = "DEAD"
 
